@@ -28,8 +28,9 @@ namespace AuthenticationAuthorization.Controllers
         }
 
         [Authorize(Roles ="Admin")]
-        public IActionResult Secured()
+        public async Task<IActionResult> Secured()
         {
+            var token = await HttpContext.GetTokenAsync("id_token");
             return View();
         }
         public IActionResult Privacy()
@@ -67,7 +68,7 @@ namespace AuthenticationAuthorization.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return Redirect("/");
+            return Redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://localhost:5001");
         }
 
         [HttpGet("accessDenied")]
