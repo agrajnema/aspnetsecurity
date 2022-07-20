@@ -5,13 +5,19 @@
     var returnUrl = ViewData["ReturnUrl"] as string;
     var error = TempData["Error"] as string;
 }
-@if(!String.IsNullOrEmpty(error))
+@if (!String.IsNullOrEmpty(error))
 {
     <h2>@error</h2>
 }
 <h2>Login Page</h2>
 <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
-<input type="text" name = "username" placeholder = "Username" />
-<input type="password" name = "password" placeholder = "Password" />
-<input type="submit" placeholder = "login" />
+    <input type="text" name="username" placeholder="Username" />
+    <input type="password" name="password" placeholder="Password" />
+    <input type="submit" placeholder="login" />
 </form>
+<div>
+    <ul>
+        <li><a href="/login/google?returnUrl=@returnUrl">Login with Google</a></li>
+        <li><a href="/login/okta?returnUrl=@returnUrl">Login with Okta</a></li>
+    </ul>
+</div>

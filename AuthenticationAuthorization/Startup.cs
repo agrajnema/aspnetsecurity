@@ -30,7 +30,7 @@ namespace AuthenticationAuthorization
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "okta";
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
                 .AddCookie(options =>
                 {
@@ -62,7 +62,7 @@ namespace AuthenticationAuthorization
                     };
 
                 })
-            .AddOpenIdConnect("GoogleOpenID", options =>
+            .AddOpenIdConnect("google", options =>
             {
                 options.Authority = "https://accounts.google.com";
                 options.ClientId = //client-id from console.cloud.google.com

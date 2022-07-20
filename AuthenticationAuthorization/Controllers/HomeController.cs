@@ -43,6 +43,19 @@ namespace AuthenticationAuthorization.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
+
+        [HttpGet("login/{provider}")]
+        public IActionResult LoginExternal([FromRoute]string provider, [FromQuery]string returnUrl)
+        {
+            if(User != null && User.Identities.Any(i => i.IsAuthenticated))
+            {
+                RedirectToAction("", "Home");
+            }
+            returnUrl = String.IsNullOrEmpty(returnUrl) ? "/" : returnUrl;
+            var authenticationProperties = new AuthenticationProperties { RedirectUri = returnUrl };
+            return new ChallengeResult(provider, authenticationProperties);
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Validate(string userName, string password, string returnUrl)
         {
