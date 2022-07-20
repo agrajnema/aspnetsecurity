@@ -30,7 +30,7 @@ namespace AuthenticationAuthorization
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "GoogleOpenID";
+                options.DefaultChallengeScheme = "okta";
             })
                 .AddCookie(options =>
                 {
@@ -82,6 +82,17 @@ namespace AuthenticationAuthorization
                         }
                     }
                 };
+            })
+            .AddOpenIdConnect("okta", options =>
+            {
+                options.Authority = "https://dev-07307362.okta.com/oauth2/default";
+                options.ClientId = "0oa5u27nqsBVPQlDN5d7";
+                options.ClientSecret = "RL8vZYNTnDX-p8GjdbQ-UyouOYbfYLGQOjD5-ibX";
+                options.CallbackPath = "/okta-auth";
+                options.ResponseType = "code";
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.SaveTokens = true;
             });
             //.AddGoogle(options =>
             //{
