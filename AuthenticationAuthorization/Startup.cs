@@ -49,7 +49,11 @@ namespace AuthenticationAuthorization
                                     claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
                                 }
                             }
-                            await Task.CompletedTask;
+
+                            var scheme = context.Properties.Items.FirstOrDefault(i => i.Key == ".AuthScheme");
+                            var claim = new Claim(scheme.Key, scheme.Value);
+                            var claimIdentity = context.Principal.Identity as ClaimsIdentity;
+                            claimIdentity.AddClaim(claim);
                         },
                         OnSignedIn = async context =>
                         {
@@ -89,6 +93,7 @@ namespace AuthenticationAuthorization
                 options.ClientId = "0oa5u27nqsBVPQlDN5d7";
                 options.ClientSecret = "RL8vZYNTnDX-p8GjdbQ-UyouOYbfYLGQOjD5-ibX";
                 options.CallbackPath = "/okta-auth";
+                options.SignedOutCallbackPath = "/okta-signout";
                 options.ResponseType = "code";
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");

@@ -70,7 +70,10 @@ namespace AuthenticationAuthorization.Controllers
                 };
                 var claimsIdentity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(claimsPrincipal);
+                var items = new Dictionary<string, string>();
+                items.Add(".AuthScheme",  CookieAuthenticationDefaults.AuthenticationScheme);
+                var authenticationProperties = new AuthenticationProperties(items);
+                await HttpContext.SignInAsync(claimsPrincipal,authenticationProperties);
                 return Redirect(returnUrl);
             }
             TempData["Error"] = "Error. Please enter valid credentials to login";
@@ -80,8 +83,16 @@ namespace AuthenticationAuthorization.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
-            return Redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://localhost:5001");
+            var scheme = User.Claims.FirstOrDefault(c => c.Type == ".AuthScheme").Value;
+            if (scheme == "google")
+            {
+                await HttpContext.SignOutAsync();
+                return Redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://localhost:5001");
+            }
+            else
+            {
+                return new SignOutResult(new[] {CookieAuthenticationDefaults.AuthenticationScheme, scheme});
+            }
         }
 
         [HttpGet("accessDenied")]
